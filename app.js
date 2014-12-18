@@ -1,5 +1,7 @@
 
-angular.module('flapperNews', []).controller('MainController', ['$scope','posts',
+var app = angular.module('flapperNews', ['ui.router']);
+
+app.controller('MainController', ['$scope','posts',
     function($scope, posts) {
 
         // two way data binding works only on stuff in the $scope
@@ -20,9 +22,26 @@ angular.module('flapperNews', []).controller('MainController', ['$scope','posts'
             post.upvotes += 1;
         };
     }
-]).factory('posts', [function(){
+]);
+
+app.factory('posts', [function(){
     var o = {
         posts: []
     };
     return o;
-}])
+}]);
+
+app.config([
+    '$stateProvider',
+    '$urlRouterProvider',
+    function($stateProvider, $urlRouterProvider) {
+        $stateProvider
+            .state('home', {
+                url: '/home',
+                templateUrl: '/home.html',
+                controller: 'MainController'
+            });
+
+        $urlRouterProvider.otherwise('home');
+    }
+])
