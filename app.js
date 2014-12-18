@@ -1,24 +1,28 @@
 
-angular.module('flapperNews', []).controller('MainController', ['$scope',
-    function($scope) {
-        $scope.test = "Hello world!";
+angular.module('flapperNews', []).controller('MainController', ['$scope','posts',
+    function($scope, posts) {
 
-        $scope.posts = [
-            {title: 'post 1', upvotes: 5},
-            {title: 'post 2', upvotes: 2},
-            {title: 'post 3', upvotes: 15},
-            {title: 'post 4', upvotes: 9},
-            {title: 'post 5', upvotes: 4}
-        ];
+        // two way data binding works only on stuff in the $scope
+        $scope.posts = posts.posts;
 
         $scope.addPost = function() {
             if (!$scope.title || $scope.title === '') { return; }
-            $scope.posts.push({title: $scope.title, upvotes: 0});
+            $scope.posts.push({
+                title: $scope.title,
+                link: $scope.link,
+                upvotes: 0
+            });
             $scope.title = '';
-        };
+            $scope.link = '';
+        }
 
         $scope.incrementUpvotes = function(post) {
             post.upvotes += 1;
-        }
+        };
     }
-]);
+]).factory('posts', [function(){
+    var o = {
+        posts: []
+    };
+    return o;
+}])
