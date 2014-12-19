@@ -6,12 +6,14 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.11/angular-ui-router.js"></script>
     <script src="app.js"></script>
-    <style>.glyphicon-thumbs-up { cursor:pointer } </style>
+    <style>.glyphicon-thumbs-up {
+        cursor: pointer
+    } </style>
     <!--<style>-->
     <!--body        { padding-top:80px; }-->
     <!--</style>-->
 </head>
-<body ng-app="flapperNews" ng-controller="MainController">
+<body ng-app="flapperNews">
 
 <div class="row">
     <div class="col-md-5 col-md-offset-4">
@@ -37,11 +39,15 @@
           <span ng-hide="post.link">
             {{post.title}}
           </span>
+            <span>
+                <a href="#/posts/{{$index}}">Comments</a>
+            </span>
         </span>
     </div>
 
     <form ng-submit="addPost()" style="margin-top:30px">
         <h3>Add a new post</h3>
+
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Title" ng-model="title"/>
         </div>
@@ -51,5 +57,41 @@
         <button type="submit" class="btn btn-primary">Post</button>
     </form>
 </script>
+
+<script type="text/ng-template" id="/posts.html">
+    <div class="page-header">
+        <h3>
+            <a ng-show="post.link" href="{{post.link}}">
+                {{post.title}}
+            </a>
+      <span ng-hide="post.link">
+        {{post.title}}
+      </span>
+        </h3>
+    </div>
+
+    <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+    <span class="glyphicon glyphicon-thumbs-up"
+          ng-click="incrementUpvotes(comment)"></span>
+        {{comment.upvotes}} - by {{comment.author}}
+    <span style="font-size:20px; margin-left:10px;">
+      {{comment.body}}
+    </span>
+    </div>
+
+    <form ng-submit="addComment()"
+          style="margin-top:30px;">
+        <h3>Add a new comment</h3>
+
+        <div class="form-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Comment"
+                   ng-model="body"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+</script>
+
 </body>
 </html>

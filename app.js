@@ -1,7 +1,7 @@
 
 var app = angular.module('flapperNews', ['ui.router']);
 
-app.controller('MainController', ['$scope','posts',
+app.controller('MainCtrl', ['$scope','posts',
     function($scope, posts) {
 
         // two way data binding works only on stuff in the $scope
@@ -12,7 +12,11 @@ app.controller('MainController', ['$scope','posts',
             $scope.posts.push({
                 title: $scope.title,
                 link: $scope.link,
-                upvotes: 0
+                upvotes: 0,
+                comments: [
+                    {author: 'Joe', body: 'Cool post!', upvotes: 0},
+                    {author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
+                ]
             });
             $scope.title = '';
             $scope.link = '';
@@ -39,9 +43,33 @@ app.config([
             .state('home', {
                 url: '/home',
                 templateUrl: '/home.html',
-                controller: 'MainController'
+                controller: 'MainCtrl'
+            })
+            .state('posts', {
+                url: '/posts/{id}',
+                templateUrl: '/posts.html',
+                controller: 'PostsCtrl'
             });
 
         $urlRouterProvider.otherwise('home');
     }
-])
+]);
+
+app.controller('PostsCtrl', [
+    '$scope',
+    '$stateParams',
+    'posts',
+    function($scope, $stateParams, posts){
+        $scope.post = posts.posts[$stateParams.id];
+
+        $scope.addComment = function(){
+            if($scope.body === '') { return; }
+            $scope.post.comments.push({
+                body: $scope.body,
+                author: 'user',
+                upvotes: 0
+            });
+            $scope.body = '';
+        };
+    }
+]);
